@@ -78,6 +78,22 @@ def save_as(**keywords):
     if "sheet_name" in dest_keywords:
         output_sheet_name = dest_keywords["sheet_name"]
     sheet = Sheet(sheet_stream.payload, output_sheet_name, **sheet_params)
+    if 'ignore_rows' in source_keywords:
+        sheet.delete_rows(source_keywords['ignore_rows'])
+    if 'ignore_cols' in source_keywords:
+        sheet.delete_named_column_at(source_keywords['ignore_cols'])
+    if 'ignore_rows_at_names' in source_keywords:
+        for i in source_keywords['ignore_rows_at_names']:
+            try:
+                sheet.delete_named_row_at(i)
+            except ValueError as e:
+                pass
+    if 'ignore_cols_at_names' in source_keywords:
+        for i in source_keywords['ignore_cols_at_names']:
+            try:
+                sheet.delete_named_column_at(i)
+            except ValueError as e:
+                pass
     return sources.save_sheet(sheet, **dest_keywords)
 
 
